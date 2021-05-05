@@ -68,6 +68,7 @@ function sleep(ms) {
 
 class App extends React.Component {
   state = {
+    value: 'Oakland, CA',
     city: 'Oakland',
     stateCode: 'CA',
     coord: null,
@@ -81,11 +82,12 @@ class App extends React.Component {
   };
 
   handleInputChange = e => {
-    const city = e.target.value.split(', ')[0];
-    const stateCode = e.target.value.split(', ')[1];
+    const city = e.target.value.split(',')[0] || null;
+    const stateCode = e.target.value.split(',')[1] || null;
     this.setState({
-      city,
-      stateCode,
+      value: e.target.value,
+      city: city !== null ? city.trim() : city,
+      stateCode: stateCode !== null ? stateCode.trim() : stateCode,
       coord: null,
     });
   };
@@ -103,11 +105,11 @@ class App extends React.Component {
       Promise.all([fetch(weather)])
         .then(([res]) => {
           if (res.ok) {
-            return res.json();
+            return Promise.all([res.json()]);
           }
           throw Error(res.statusText);
         })
-        .then(res => {
+        .then(([res]) => {
           this.setState({ coord: res.coord });
         });
     }
@@ -193,7 +195,7 @@ class App extends React.Component {
   };
 
   render() {
-    const { city, stateCode, weatherInfo, error } = this.state;
+    const { value, weatherInfo, error } = this.state;
     return (
       <>
         <AppTitle showLabel={(weatherInfo || error) && true}>Weather app</AppTitle>
@@ -202,7 +204,7 @@ class App extends React.Component {
             Weather app
           </AppTitle>
           <SearchCity
-            value={`${city}, ${stateCode}`}
+            value={value}
             showResult={(weatherInfo || error) && true}
             change={this.handleInputChange}
             submit={this.handleSearchCity}
