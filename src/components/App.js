@@ -5,6 +5,8 @@ import device from '../responsive/Device';
 import Result from './Result';
 import NotFound from './NotFound';
 
+const moment = require('moment');
+
 const AppTitle = styled.h1`
   display: block;
   height: 64px;
@@ -60,27 +62,63 @@ const WeatherWrapper = styled.div`
   position: relative;
 `;
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 class App extends React.Component {
   state = {
-    value: '',
+    city: 'Oakland',
+    stateCode: 'CA',
+    coord: null,
     weatherInfo: null,
     error: false,
   };
 
+  componentDidMount = async () => {
+    this.handleSearchCity();
+    setInterval(this.SearchCity, 60 * 1000);
+  };
+
   handleInputChange = e => {
+    const city = e.target.value.split(', ')[0];
+    const stateCode = e.target.value.split(', ')[1];
     this.setState({
-      value: e.target.value,
+      city,
+      stateCode,
+      coord: null,
     });
   };
 
-  handleSearchCity = e => {
-    e.preventDefault();
-    const { value } = this.state;
+  handleSearchCity = async e => {
+    // eslint-disable-next-line no-unused-expressions
+    e && e.preventDefault();
+    // const { value } = this.state;
+    const { city, stateCode } = this.state;
+    let { coord } = this.state;
     const APIkey = process.env.REACT_APP_API_KEY;
 
-    const weather = `https://api.openweathermap.org/data/2.5/weather?q=${value}&APPID=${APIkey}&units=metric`;
-    const forecast = `https://api.openweathermap.org/data/2.5/forecast?q=${value}&APPID=${APIkey}&units=metric`;
+    const weather = `https://api.openweathermap.org/data/2.5/weather?q=${city},${stateCode},US&APPID=${APIkey}&units=imperial`;
+    if (coord === null) {
+      Promise.all([fetch(weather)])
+        .then(([res]) => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw Error(res.statusText);
+        })
+        .then(res => {
+          this.setState({ coord: res.coord });
+        });
+    }
 
+    while (coord === null) {
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(1000);
+      // eslint-disable-next-line react/destructuring-assignment
+      coord = this.state.coord;
+    }
+    const forecast = `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&appid=${APIkey}&units=imperial&exclude=minutely`;
     Promise.all([fetch(weather), fetch(forecast)])
       .then(([res1, res2]) => {
         if (res1.ok && res2.ok) {
@@ -89,43 +127,46 @@ class App extends React.Component {
         throw Error(res1.statusText, res2.statusText);
       })
       .then(([data1, data2]) => {
-        const months = [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'Nocvember',
-          'December',
-        ];
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const currentDate = new Date();
-        const date = `${days[currentDate.getDay()]} ${currentDate.getDate()} ${
-          months[currentDate.getMonth()]
-        }`;
-        const sunset = new Date(data1.sys.sunset * 1000).toLocaleTimeString().slice(0, 5);
-        const sunrise = new Date(data1.sys.sunrise * 1000).toLocaleTimeString().slice(0, 5);
+        const date = moment(currentDate)
+          .utcOffset(-currentDate.getTimezoneOffset())
+          .format('dddd MMMM Do');
+
+        const sunsetDate = new Date(data1.sys.sunset * 1000);
+        const sunriseDate = new Date(data1.sys.sunrise * 1000);
+        const tzOffset = data1.timezone / 60;
+
+        const sunset = moment(sunsetDate)
+          .utcOffset(tzOffset)
+          .format('hh:mm a');
+        const sunrise = moment(sunriseDate)
+          .utcOffset(tzOffset)
+          .format('hh:mm a');
+
+        const hourlyForecast = data2.hourly.filter((hour, index) => index % 3 === 0);
+        const temps = hourlyForecast.map(hour => hour.temp);
+        const tempMax = temps.reduce(function max(a, b) {
+          return Math.max(a, b);
+        });
+        const tempMin = temps.reduce(function min(a, b) {
+          return Math.min(a, b);
+        });
 
         const weatherInfo = {
           city: data1.name,
-          country: data1.sys.country,
+          stateCode,
           date,
           description: data1.weather[0].description,
           main: data1.weather[0].main,
           temp: data1.main.temp,
-          highestTemp: data1.main.temp_max,
-          lowestTemp: data1.main.temp_min,
+          highestTemp: tempMax,
+          lowestTemp: tempMin,
           sunrise,
           sunset,
           clouds: data1.clouds.all,
           humidity: data1.main.humidity,
           wind: data1.wind.speed,
-          forecast: data2.list,
+          forecast: hourlyForecast, // each element is 3 hours
         };
         this.setState({
           weatherInfo,
@@ -133,6 +174,7 @@ class App extends React.Component {
         });
       })
       .catch(error => {
+        // eslint-disable-next-line no-console
         console.log(error);
 
         this.setState({
@@ -142,8 +184,16 @@ class App extends React.Component {
       });
   };
 
+  componentDidMount = () => {
+    const { city } = this.state;
+    if (city !== null) {
+      this.handleSearchCity();
+      setInterval(this.handleSearchCity(), 60 * 1000);
+    }
+  };
+
   render() {
-    const { value, weatherInfo, error } = this.state;
+    const { city, stateCode, weatherInfo, error } = this.state;
     return (
       <>
         <AppTitle showLabel={(weatherInfo || error) && true}>Weather app</AppTitle>
@@ -152,7 +202,7 @@ class App extends React.Component {
             Weather app
           </AppTitle>
           <SearchCity
-            value={value}
+            value={`${city}, ${stateCode}`}
             showResult={(weatherInfo || error) && true}
             change={this.handleInputChange}
             submit={this.handleSearchCity}

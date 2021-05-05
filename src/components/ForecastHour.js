@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SmallLabel from './SmallLabel';
 import Text from './Text';
 import device from '../responsive/Device';
+import iconMap from './iconMap';
 
 const ForecastWrapper = styled.div`
   flex-shrink: 0;
@@ -29,24 +31,39 @@ const ForecastWrapper = styled.div`
   }
 `;
 
-const WeatherIcon = styled.img`
-  display: block;
-  height: 50px;
-  width: 50px;
-  margin: 0 auto;
+const WeatherIconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
 `;
 
-const ForecastHour = props => {
-  const { temp, month, day, hour, icon } = props;
-  const iconUrl = `https://openweathermap.org/img/w/${icon}.png`;
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'Nocvember',
+  'December',
+];
 
+const ForecastHour = props => {
+  const { dt, temp, main } = props;
+  const dateTime = new Date(dt * 1000);
+  const weatherIcon = <FontAwesomeIcon icon={iconMap[main] || iconMap.default} size="lg" />;
   return (
     <ForecastWrapper>
       <Text align="center">
-        {month}.{day}
+        {months[dateTime.getMonth()]} {dateTime.getDate()}
       </Text>
-      <Text align="center">{hour}:00</Text>
-      <WeatherIcon src={iconUrl} />
+      <Text align="center">{dateTime.getHours()}:00</Text>
+      <WeatherIconWrapper>{weatherIcon}</WeatherIconWrapper>
       <SmallLabel align="center" weight="400">
         {temp}&#176;
       </SmallLabel>
@@ -55,11 +72,9 @@ const ForecastHour = props => {
 };
 
 ForecastHour.propTypes = {
+  dt: PropTypes.number.isRequired,
   temp: PropTypes.number.isRequired,
-  month: PropTypes.string.isRequired,
-  day: PropTypes.string.isRequired,
-  hour: PropTypes.number.isRequired,
-  icon: PropTypes.string.isRequired,
+  main: PropTypes.string.isRequired,
 };
 
 export default ForecastHour;

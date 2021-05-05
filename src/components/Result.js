@@ -2,15 +2,6 @@ import React from 'react';
 import './Result.sass';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCloud,
-  faBolt,
-  faCloudRain,
-  faCloudShowersHeavy,
-  faSnowflake,
-  faSun,
-  faSmog,
-} from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import device from '../responsive/Device';
 import ForecastHour from './ForecastHour';
@@ -19,6 +10,8 @@ import BigLabel from './BigLabel';
 import MediumLabel from './MediumLabel';
 import SmallLabel from './SmallLabel';
 import Text from './Text';
+// import { icon } from '@fortawesome/fontawesome-svg-core';
+import iconMap from './iconMap';
 
 const Results = styled.div`
   display: flex;
@@ -121,7 +114,7 @@ const ForecastWrapper = styled.div`
 const Forecast = styled.div`
   position: relative;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: hidden;
   overflow-y: hidden;
   scrollbar-color: lightgray #ffffff;
   scrollbar-width: thin;
@@ -135,7 +128,7 @@ const Forecast = styled.div`
 const Result = ({ weather }) => {
   const {
     city,
-    country,
+    stateCode,
     date,
     description,
     main,
@@ -152,37 +145,19 @@ const Result = ({ weather }) => {
   const forecasts = forecast.map(item => (
     <ForecastHour
       key={item.dt}
-      temp={Math.floor(item.main.temp * 1) / 1}
-      icon={item.weather[0].icon}
-      month={item.dt_txt.slice(5, 7)}
-      day={item.dt_txt.slice(8, 10)}
-      hour={item.dt_txt.slice(11, 13) * 1}
+      dt={item.dt}
+      temp={Math.floor(item.temp * 1) / 1}
+      main={item.weather[0].main}
     />
   ));
 
-  let weatherIcon = null;
-
-  if (main === 'Thunderstorm') {
-    weatherIcon = <FontAwesomeIcon icon={faBolt} />;
-  } else if (main === 'Drizzle') {
-    weatherIcon = <FontAwesomeIcon icon={faCloudRain} />;
-  } else if (main === 'Rain') {
-    weatherIcon = <FontAwesomeIcon icon={faCloudShowersHeavy} />;
-  } else if (main === 'Snow') {
-    weatherIcon = <FontAwesomeIcon icon={faSnowflake} />;
-  } else if (main === 'Clear') {
-    weatherIcon = <FontAwesomeIcon icon={faSun} />;
-  } else if (main === 'Clouds') {
-    weatherIcon = <FontAwesomeIcon icon={faCloud} />;
-  } else {
-    weatherIcon = <FontAwesomeIcon icon={faSmog} />;
-  }
+  const weatherIcon = <FontAwesomeIcon icon={iconMap[main] || iconMap.default} />;
 
   return (
     <Results>
       <LocationWrapper>
         <BigLabel>
-          {city}, {country}
+          {city}, {stateCode}
         </BigLabel>
         <SmallLabel weight="400">{date}</SmallLabel>
       </LocationWrapper>
@@ -200,7 +175,7 @@ const Result = ({ weather }) => {
           <SmallLabel align="center" weight="400">
             {Math.floor(highestTemp)}&#176;
           </SmallLabel>
-          <Text align="center">Hight</Text>
+          <Text align="center">High</Text>
         </WeatherDetail>
         <WeatherDetail>
           <SmallLabel align="center" weight="400">
@@ -224,7 +199,7 @@ const Result = ({ weather }) => {
           <SmallLabel align="center" weight="400">
             {humidity}%
           </SmallLabel>
-          <Text align="center">Rain</Text>
+          <Text align="center">Humidity</Text>
         </WeatherDetail>
         <WeatherDetail>
           <SmallLabel align="center" weight="400">
@@ -244,7 +219,7 @@ const Result = ({ weather }) => {
 Result.propTypes = {
   weather: PropTypes.shape({
     city: PropTypes.string,
-    country: PropTypes.string,
+    stateCode: PropTypes.string,
     date: PropTypes.string,
     description: PropTypes.string,
     main: PropTypes.string,
