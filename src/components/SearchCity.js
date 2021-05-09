@@ -22,10 +22,10 @@ const SearchBar = styled.form`
 const SearchInput = styled.input`
   width: 100%;
   border: none;
-  background-color: #ffffff;
+  background-color: #ffffff95;
   font-size: 16px;
   padding: 10px 15px 10px 40px;
-  color: #c5c5c5;
+  color: #00000075;
   transition: 0.2s;
   border-radius: 20px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -52,7 +52,7 @@ const SearchIcon = styled.span`
   height: 14px;
   width: 14px;
   font-size: 14px;
-  color: #c5c5c5;
+  color: #00000075;
   @media ${device.tablet} {
     height: 15px;
     width: 15px;

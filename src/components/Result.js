@@ -9,8 +9,8 @@ import ResultFadeIn from './ResultFadeIn';
 import BigLabel from './BigLabel';
 import MediumLabel from './MediumLabel';
 import SmallLabel from './SmallLabel';
+import UpdatedAt from './UpdatedAt';
 import Text from './Text';
-// import { icon } from '@fortawesome/fontawesome-svg-core';
 import iconMap from './iconMap';
 
 const Results = styled.div`
@@ -140,6 +140,7 @@ const Result = ({ weather }) => {
     highestTemp,
     lowestTemp,
     forecast,
+    latestUpdate,
   } = weather;
 
   const forecasts = forecast.map(item => (
@@ -152,14 +153,18 @@ const Result = ({ weather }) => {
   ));
 
   const weatherIcon = <FontAwesomeIcon icon={iconMap[main] || iconMap.default} />;
-
   return (
     <Results>
       <LocationWrapper>
         <BigLabel>
           {city}, {stateCode}
         </BigLabel>
-        <SmallLabel weight="400">{date}</SmallLabel>
+        <div style={{ clear: 'both' }}>
+          <SmallLabel weight="400" style={{ float: 'left' }}>
+            {date}
+          </SmallLabel>
+          <UpdatedAt style={{ float: 'right' }}>Last Updated: {latestUpdate}</UpdatedAt>
+        </div>
       </LocationWrapper>
       <CurrentWeatherWrapper>
         <WeatherIcon>{weatherIcon}</WeatherIcon>
@@ -231,6 +236,7 @@ Result.propTypes = {
     highestTemp: PropTypes.number,
     lowestTemp: PropTypes.number,
     forecast: PropTypes.array,
+    latestUpdate: PropTypes.string,
   }).isRequired,
 };
 

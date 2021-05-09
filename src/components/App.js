@@ -76,11 +76,6 @@ class App extends React.Component {
     error: false,
   };
 
-  componentDidMount = async () => {
-    this.handleSearchCity();
-    setInterval(this.SearchCity, 60 * 1000);
-  };
-
   handleInputChange = e => {
     const city = e.target.value.split(',')[0] || null;
     const stateCode = e.target.value.split(',')[1] || null;
@@ -140,10 +135,10 @@ class App extends React.Component {
 
         const sunset = moment(sunsetDate)
           .utcOffset(tzOffset)
-          .format('hh:mm a');
+          .format('h:mm a');
         const sunrise = moment(sunriseDate)
           .utcOffset(tzOffset)
-          .format('hh:mm a');
+          .format('h:mm a');
 
         const hourlyForecast = data2.hourly.filter((hour, index) => index % 3 === 0);
         const temps = hourlyForecast.map(hour => hour.temp);
@@ -168,7 +163,8 @@ class App extends React.Component {
           clouds: data1.clouds.all,
           humidity: data1.main.humidity,
           wind: data1.wind.speed,
-          forecast: hourlyForecast, // each element is 3 hours
+          forecast: hourlyForecast.slice(1), // each element is 3 hours,
+          latestUpdate: moment(currentDate).format('MMM Do HH:mm:ss'),
         };
         this.setState({
           weatherInfo,
@@ -186,11 +182,12 @@ class App extends React.Component {
       });
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const { city } = this.state;
     if (city !== null) {
-      this.handleSearchCity();
-      setInterval(this.handleSearchCity(), 60 * 1000);
+      const thisBoundSearchCity = this.handleSearchCity.bind(this);
+      thisBoundSearchCity();
+      setInterval(thisBoundSearchCity, 600 * 1000); // refresh every 10 minutes
     }
   };
 

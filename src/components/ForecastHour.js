@@ -56,13 +56,17 @@ const months = [
 const ForecastHour = props => {
   const { dt, temp, main } = props;
   const dateTime = new Date(dt * 1000);
+  const now = new Date();
+  const forecastTime = dateTime - now;
+  const hoursAhead = Math.floor(forecastTime / (3600 * 1000));
+  console.log('Forecase time', hoursAhead);
   const weatherIcon = <FontAwesomeIcon icon={iconMap[main] || iconMap.default} size="lg" />;
   return (
     <ForecastWrapper>
       <Text align="center">
         {months[dateTime.getMonth()]} {dateTime.getDate()}
       </Text>
-      <Text align="center">{dateTime.getHours()}:00</Text>
+      <Text align="center">+{hoursAhead}h</Text>
       <WeatherIconWrapper>{weatherIcon}</WeatherIconWrapper>
       <SmallLabel align="center" weight="400">
         {temp}&#176;
