@@ -1,4 +1,5 @@
-# React - weather-app
+# (Forked) React - weather-app
+ Small adjustments made to:
 
 https://rawfour.github.io/weather-app-react/
 

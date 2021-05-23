@@ -93,7 +93,7 @@ class App extends React.Component {
     // const { value } = this.state;
     const { city, stateCode } = this.state;
     let { coord } = this.state;
-    const APIkey = process.env.REACT_APP_API_KEY;
+    const APIkey = window.env.REACT_APP_API_KEY;
 
     const weather = `https://api.openweathermap.org/data/2.5/weather?q=${city},${stateCode},US&APPID=${APIkey}&units=imperial`;
     if (coord === null) {
