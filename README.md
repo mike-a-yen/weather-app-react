@@ -1,7 +1,8 @@
 # (Forked) React - weather-app
  Small adjustments made to:
-
 https://rawfour.github.io/weather-app-react/
+
+Using as a raspberry pi dashboard.
 
 ## Table of contents
 * [Instructions](#Instructions)
@@ -24,6 +25,18 @@ $ npm install # or yarn
 Run it
 ```bash
 $ npm start # or yarn start
+```
+
+Build it
+```bash
+$ npm run build
+```
+
+Update the raspberry pi
+```bash
+$ npm run build  # update the lastest build
+$ scp -r build/ pi@192.168.0.234:/home/pi/weather-app-react # copy to raspberry pi
+# reboot the raspberry pi
 ```
 
 ## Description
