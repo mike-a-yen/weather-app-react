@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import device from '../responsive/Device';
 
 const UpdatedAt = styled.h4`
-  color: ${({ color }) => color || '#FFFFFF90'};
+  color: ${({ color }) => color || '#FFFFFF'};
   display: block;
   font-weight: ${({ weight }) => weight || '400'};
   font-size: ${({ fontSize }) => fontSize || '10px'};
