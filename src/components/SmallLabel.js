@@ -16,13 +16,13 @@ const SmallLabel = styled.h4`
   }
   `}
   @media ${device.tablet} {
-    font-size: ${({ fontSize }) => fontSize || '20px'};
+    font-size: ${({ fontSize }) => fontSize || '30px'};
   }
   @media ${device.laptop} {
-    font-size: ${({ fontSize }) => fontSize || '23px'};
+    font-size: ${({ fontSize }) => fontSize || '33px'};
   } 
   @media ${device.laptopL} {
-    font-size: ${({ fontSize }) => fontSize || '26px'};
+    font-size: ${({ fontSize }) => fontSize || '36px'};
   }
 `;
 

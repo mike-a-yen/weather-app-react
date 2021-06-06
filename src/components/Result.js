@@ -29,6 +29,18 @@ const LocationWrapper = styled.div`
   flex-basis: 100%;
 `;
 
+const TodayWeatherWrapper = styled.div`
+  flex-basis: 100%;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+  margin: 20px 0;
+  grid-gap: 30px;
+  background-color: #24242425;
+  border-radius: 10px;
+`;
+
 const CurrentWeatherWrapper = styled.div`
   flex-basis: 100%;
   display: grid;
@@ -89,7 +101,6 @@ const WeatherDetailsWrapper = styled.div`
   flex-wrap: wrap;
   padding: 10px 0;
   margin: 20px 0;
-  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   align-self: flex-start;
   @media ${device.mobileL} {
@@ -166,53 +177,55 @@ const Result = ({ weather }) => {
           <UpdatedAt style={{ float: 'right' }}>Last Updated: {latestUpdate}</UpdatedAt>
         </div>
       </LocationWrapper>
-      <CurrentWeatherWrapper>
-        <WeatherIcon>{weatherIcon}</WeatherIcon>
-        <TemperatureWrapper>
-          <Temperature>{Math.floor(temp)}&#176;</Temperature>
-          <SmallLabel weight="400" firstToUpperCase>
-            {description}
-          </SmallLabel>
-        </TemperatureWrapper>
-      </CurrentWeatherWrapper>
-      <WeatherDetailsWrapper>
-        <WeatherDetail>
-          <SmallLabel align="center" weight="400">
-            {Math.floor(highestTemp)}&#176;
-          </SmallLabel>
-          <Text align="center">High</Text>
-        </WeatherDetail>
-        <WeatherDetail>
-          <SmallLabel align="center" weight="400">
-            {wind}mph
-          </SmallLabel>
-          <Text align="center">Wind</Text>
-        </WeatherDetail>
-        <WeatherDetail>
-          <SmallLabel align="center" weight="400">
-            {sunrise}
-          </SmallLabel>
-          <Text align="center">Sunrise</Text>
-        </WeatherDetail>
-        <WeatherDetail>
-          <SmallLabel align="center" weight="400">
-            {Math.floor(lowestTemp)}&#176;
-          </SmallLabel>
-          <Text align="center">Low</Text>
-        </WeatherDetail>
-        <WeatherDetail>
-          <SmallLabel align="center" weight="400">
-            {humidity}%
-          </SmallLabel>
-          <Text align="center">Humidity</Text>
-        </WeatherDetail>
-        <WeatherDetail>
-          <SmallLabel align="center" weight="400">
-            {sunset}
-          </SmallLabel>
-          <Text align="center">Sunset</Text>
-        </WeatherDetail>
-      </WeatherDetailsWrapper>
+      <TodayWeatherWrapper>
+        <CurrentWeatherWrapper>
+          <WeatherIcon>{weatherIcon}</WeatherIcon>
+          <TemperatureWrapper>
+            <Temperature>{Math.floor(temp)}&#176;</Temperature>
+            <SmallLabel weight="400" firstToUpperCase>
+              {description}
+            </SmallLabel>
+          </TemperatureWrapper>
+        </CurrentWeatherWrapper>
+        <WeatherDetailsWrapper>
+          <WeatherDetail>
+            <SmallLabel align="center" weight="500">
+              {Math.floor(highestTemp)}&#176;
+            </SmallLabel>
+            <Text align="center">High</Text>
+          </WeatherDetail>
+          <WeatherDetail>
+            <SmallLabel align="center" weight="500">
+              {wind}mph
+            </SmallLabel>
+            <Text align="center">Wind</Text>
+          </WeatherDetail>
+          <WeatherDetail>
+            <SmallLabel align="center" weight="500">
+              {sunrise}
+            </SmallLabel>
+            <Text align="center">Sunrise</Text>
+          </WeatherDetail>
+          <WeatherDetail>
+            <SmallLabel align="center" weight="500">
+              {Math.floor(lowestTemp)}&#176;
+            </SmallLabel>
+            <Text align="center">Low</Text>
+          </WeatherDetail>
+          <WeatherDetail>
+            <SmallLabel align="center" weight="500">
+              {humidity}%
+            </SmallLabel>
+            <Text align="center">Humidity</Text>
+          </WeatherDetail>
+          <WeatherDetail>
+            <SmallLabel align="center" weight="500">
+              {sunset}
+            </SmallLabel>
+            <Text align="center">Sunset</Text>
+          </WeatherDetail>
+        </WeatherDetailsWrapper>
+      </TodayWeatherWrapper>
       <ForecastWrapper>
         <MediumLabel weight="400">Forecast</MediumLabel>
         <Forecast>{forecasts}</Forecast>

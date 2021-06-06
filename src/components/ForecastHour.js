@@ -59,7 +59,6 @@ const ForecastHour = props => {
   const now = new Date();
   const forecastTime = dateTime - now;
   const hoursAhead = Math.floor(forecastTime / (3600 * 1000));
-  console.log('Forecase time', hoursAhead);
   const weatherIcon = <FontAwesomeIcon icon={iconMap[main] || iconMap.default} size="lg" />;
   return (
     <ForecastWrapper>

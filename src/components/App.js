@@ -139,14 +139,17 @@ class App extends React.Component {
           .utcOffset(tzOffset)
           .format('h:mm a');
 
-        const hourlyForecast = data2.hourly.filter((hour, index) => index % 3 === 0);
-        const temps = hourlyForecast.map(hour => hour.temp);
+        const temps = data2.hourly.map(hour => hour.temp);
         const tempMax = temps.reduce(function max(a, b) {
           return Math.max(a, b);
         });
         const tempMin = temps.reduce(function min(a, b) {
           return Math.min(a, b);
         });
+
+        const hourlyForecast = data2.hourly
+          .filter(hour => hour.dt * 1000 > currentDate.getTime())
+          .filter((hour, index) => index % 3 === 0);
 
         const weatherInfo = {
           city: data1.name,
